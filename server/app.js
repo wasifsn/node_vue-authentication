@@ -7,15 +7,18 @@ var usersRouter = require("./routes/users");
 var app = express();
 var BASE_PATH = path.resolve(process.env.BASE_PATH || __dirname);
 const mongoose = require("mongoose");
+const passport = require("passport");
+
+// passport config
+require("./config/passport")(passport);
 
 //db config
-
 const db = require("./config/keys").MongoUri;
 
 mongoose
   .connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
-    console.log("mongo DB CONNECTED");
+    console.log(`Connected to DB: test`);
   })
   .catch(err => console.log(err));
 
@@ -34,6 +37,10 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+
+// passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
 
 const port = process.env.port || 4000;
 const ip = process.env.ip || "localhost";
