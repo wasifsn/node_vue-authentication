@@ -4,13 +4,10 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
+const jwt = require("jsonwebtoken");
 var app = express();
 var BASE_PATH = path.resolve(process.env.BASE_PATH || __dirname);
 const mongoose = require("mongoose");
-const passport = require("passport");
-
-// passport config
-require("./config/passport")(passport);
 
 //db config
 const db = require("./config/keys").MongoUri;
@@ -37,10 +34,6 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
-
-// passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
 
 const port = process.env.port || 4000;
 const ip = process.env.ip || "localhost";
