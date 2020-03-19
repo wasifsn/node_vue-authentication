@@ -8,9 +8,10 @@ const { secretKey } = require("../config/jwt");
 /* GET home page. */
 router.post("/api/register", async function(req, res, next) {
   let { name, email, password } = req.body;
-  if (!name || !email || !password) {
-    res.status(400).json({ msg: "something went wrong" });
-  } else if (password) {
+  let user = await User.findOne({ email: email });
+  if (user) {
+    res.status(409).send({ auth: false, msg: "user with email exists" });
+  } else if (!user) {
     let newUser = new User({ name, email, password });
     bcrypt.hash(password, 10, async (err, hash) => {
       if (err) {
@@ -18,7 +19,6 @@ router.post("/api/register", async function(req, res, next) {
       }
       newUser.password = hash;
       let response = await newUser.save();
-      console.log(response);
     });
     let token = await jwt.sign(
       { id: newUser.id, userName: newUser.name, email: newUser.email },
@@ -28,6 +28,8 @@ router.post("/api/register", async function(req, res, next) {
       }
     );
     res.status(200).send({ auth: true, token: token });
+  } else {
+    res.status(500).send({ error: "Error on the server" });
   }
 });
 
@@ -52,7 +54,6 @@ router.post("/api/login", async (req, res, next) => {
     }
     // res.status(200).send({ data: user });
   } catch {
-    // console.log(err);
     res.status(500).send({ error: "Error on the server" });
   }
 });
