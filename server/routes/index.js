@@ -51,8 +51,8 @@ router.post("/api/login", async (req, res, next) => {
       res.status(200).send({ auth: true, token: token });
     }
     // res.status(200).send({ data: user });
-  } catch (err) {
-    console.log(err);
+  } catch {
+    // console.log(err);
     res.status(500).send({ error: "Error on the server" });
   }
 });
