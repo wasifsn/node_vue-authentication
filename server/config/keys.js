@@ -1,4 +1,4 @@
 module.exports = {
-  MongoUri:
-    "mongodb+srv://wasifsn:1234@cluster0-eeuj0.gcp.mongodb.net/test?retryWrites=true&w=majority"
+  //add your atlas Mongo db uri as a value to MongoUri key
+  MongoUri: ""
 };
